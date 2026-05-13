@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>الملتقى التعليمي - التدشين الرسمي</title>
+    <!-- الخطوط العربية الفخمة -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+        cursor: none; /* إخفاء مؤشر الماوس على البروجيكتور */
+      }
+
+      body {
+        font-family: "Cairo", "Tajawal", sans-serif;
+        background: linear-gradient(135deg, #f7f3ea 0%, #efe6d1 100%);
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        touch-action: manipulation;
+      }
+
+      /* الحاوية الرئيسية */
+      .screen-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: radial-gradient(
+          circle at 10% 20%,
+          rgba(200, 167, 93, 0.05),
+          rgba(30, 40, 60, 0.02)
+        );
+      }
+
+      /* شعارات عليا */
+      .top-logos {
+        position: absolute;
+        top: 30px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 50px;
+        z-index: 25;
+        pointer-events: none;
+      }
+
+      .logo-item {
+        background: rgba(255, 255, 240, 0.7);
+        backdrop-filter: blur(5px);
+        padding: 10px 25px;
+        border-radius: 50px;
+        border-right: 3px solid #c8a75d;
+        border-bottom: 1px solid #c8a75d;
+        font-weight: 600;
+        color: #2c3e4e;
+        font-size: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .logo-item span {
+        color: #c8a75d;
+        font-weight: 900;
+      }
+
+      /* فيديو العرض */
+      .video-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 20;
+        display: none;
+      }
+
+      /* المنصة الرئيسية - أنيقة فخمة */
+      .scan-platform {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        background: rgba(255, 252, 245, 0.85);
+        backdrop-filter: blur(12px);
+        border-radius: 70px;
+        padding: 2rem 3rem;
+        border: 2px solid #c8a75d;
+        box-shadow:
+          0 20px 40px rgba(0, 0, 0, 0.1),
+          0 0 0 8px rgba(200, 167, 93, 0.2);
+        min-width: 480px;
+        transition: 0.3s;
+      }
+
+      /* عنوان الملتقى */
+      .event-title {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #2c3e4e;
+        margin-bottom: 0.5rem;
+        margin-top: 0.5rem;
+        letter-spacing: -0.5px;
+      }
+
+      .event-sub {
+        color: #c8a75d;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 20px;
+        border-bottom: 1px dashed #c8a75d;
+        display: inline-block;
+        padding-bottom: 5px;
+      }
+
+      /* منطقة وضع اليد - إطار ذهبي فاخر */
+      .hand-placement-area {
+        position: relative;
+        width: 340px;
+        height: 380px;
+        margin: 20px auto;
+        background: rgba(44, 62, 78, 0.05);
+        border-radius: 50px;
+        border: 2px solid #c8a75d;
+        box-shadow:
+          inset 0 0 30px rgba(200, 167, 93, 0.1),
+          0 10px 20px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        transition: 0.2s;
+      }
+
+      /* أيقونة يد شفافة */
+      .hand-icon {
+        width: 140px;
+        height: auto;
+        opacity: 0.4;
+        filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+      }
+
+      .hand-icon svg {
+        width: 100%;
+        fill: none;
+        stroke: #8b6b3d;
+        stroke-width: 1.5;
+      }
+
+      /* شريط المسح الذهبي الناعم */
+      .scan-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          #d4af37,
+          #fff2b2,
+          #d4af37,
+          transparent
+        );
+        box-shadow: 0 0 8px #d4af37;
+        z-index: 15;
+        display: none;
+        pointer-events: none;
+      }
+
+      /* تأثير النجاح الرسمي */
+      .success-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(44, 62, 78, 0.7);
+        backdrop-filter: blur(6px);
+        border-radius: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: 0.3s;
+        pointer-events: none;
+        z-index: 20;
+      }
+
+      .success-overlay span:first-child {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #c8a75d;
+        background: rgba(255, 255, 245, 0.9);
+        padding: 15px 30px;
+        border-radius: 60px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .success-overlay span:last-child {
+        margin-top: 15px;
+        color: #2c3e4e;
+        font-weight: 600;
+        background: rgba(255, 255, 240, 0.8);
+        padding: 5px 20px;
+        border-radius: 30px;
+      }
+
+      /* النصوص */
+      .status {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 20px 0 10px;
+        color: #2c3e4e;
+        background: rgba(200, 167, 93, 0.1);
+        display: inline-block;
+        padding: 8px 25px;
+        border-radius: 40px;
+      }
+
+      .instruction {
+        font-size: 1rem;
+        color: #5d6e7e;
+        font-weight: 500;
+      }
+
+      /* حركة نبض خفيفة */
+      @keyframes gentlePulse {
+        0% {
+          border-color: #c8a75d;
+          box-shadow: 0 0 0 0 rgba(200, 167, 93, 0.3);
+        }
+        100% {
+          border-color: #e2c280;
+          box-shadow: 0 0 0 12px rgba(200, 167, 93, 0);
+        }
+      }
+
+      .scanning-active {
+        animation: gentlePulse 1s infinite;
+        border-color: #e2c280 !important;
+      }
+
+      @media (max-width: 700px) {
+        .scan-platform {
+          min-width: 320px;
+          padding: 1rem;
+        }
+        .hand-placement-area {
+          width: 280px;
+          height: 320px;
+        }
+        .event-title {
+          font-size: 1.4rem;
+        }
+        .top-logos {
+          padding: 0 15px;
+        }
+        .logo-item {
+          font-size: 0.7rem;
+          padding: 5px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="screen-container">
+      <!-- الفيديو الرسمي (غيّر المسار) -->
+      <video id="eventVideo" class="video-layer" preload="auto">
+        <source
+          src="https://www.w3schools.com/html/mov_bbb.mp4"
+          type="video/mp4"
+        />
+      </video>
+
+      <!-- الشعارات العلوية -->
+      <div class="top-logos">
+        <div class="logo-item">🇴🇲 <span>رؤية عمان 2040</span></div>
+        <div class="logo-item">وزارة التربية والتعليم</div>
+        <div class="logo-item"><span>الملتقى التعليمي</span> الأول</div>
+      </div>
+
+      <!-- منصة التدشين الرسمية -->
+      <div id="scanPlatform" class="scan-platform">
+        <div class="event-title">ملتقى رؤي تُبنى ومستقبل يُرسم</div>
+        <div class="event-sub">
+          تحت رعايه الفاضل الدكتور /مسلم بن سالم الحراصي
+        </div>
+        <p>مدير دائره تطوير الاداء المدرسي</p>
+
+        <div id="handArea" class="hand-placement-area">
+          <!-- أيقونة يد شفافة محايدة -->
+          <div class="hand-icon">
+            <svg viewBox="0 0 120 180" fill="none">
+              <rect
+                x="30"
+                y="70"
+                width="55"
+                height="70"
+                rx="20"
+                stroke="#8b6b3d"
+                stroke-width="1.8"
+                fill="none"
+              />
+              <rect
+                x="35"
+                y="20"
+                width="12"
+                height="60"
+                rx="6"
+                stroke="#8b6b3d"
+                stroke-width="1.8"
+                fill="none"
+              />
+              <rect
+                x="50"
+                y="12"
+                width="12"
+                height="68"
+                rx="6"
+                stroke="#8b6b3d"
+                stroke-width="1.8"
+                fill="none"
+              />
+              <rect
+                x="65"
+                y="18"
+                width="12"
+                height="62"
+                rx="6"
+                stroke="#8b6b3d"
+                stroke-width="1.8"
+                fill="none"
+              />
+              <rect
+                x="78"
+                y="35"
+                width="12"
+                height="47"
+                rx="6"
+                stroke="#8b6b3d"
+                stroke-width="1.8"
+                fill="none"
+              />
+              <path
+                d="M25 95 L18 85 L10 95"
+                stroke="#8b6b3d"
+                stroke-width="1.8"
+                fill="none"
+              />
+            </svg>
+          </div>
+          <div id="scanBar" class="scan-bar"></div>
+          <div id="successOverlay" class="success-overlay">
+            <span>✓ تم التحقق بنجاح</span>
+            <span>بدء عرض الملتقى</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const videoEl = document.getElementById("eventVideo");
+      const handArea = document.getElementById("handArea");
+      const scanBar = document.getElementById("scanBar");
+      const successOverlay = document.getElementById("successOverlay");
+      const statusText = document.getElementById("statusText");
+      const platform = document.getElementById("scanPlatform");
+
+      let isVideoPlaying = false;
+      let isScanning = false;
+      let cooldown = false;
+
+      // مسح ضوئي ناعم من الأعلى للأسفل
+      function startSoftScan() {
+        return new Promise((resolve) => {
+          scanBar.style.display = "block";
+          scanBar.style.top = "0px";
+          handArea.classList.add("scanning-active");
+
+          const height = handArea.offsetHeight;
+          let pos = 0;
+          const step = 4;
+          const interval = setInterval(() => {
+            pos += step;
+            scanBar.style.top = pos + "px";
+            if (pos >= height) {
+              clearInterval(interval);
+              scanBar.style.display = "none";
+              handArea.classList.remove("scanning-active");
+              resolve();
+            }
+          }, 12);
+        });
+      }
+
+      // تأثير النجاح الرسمي
+      function showFormalSuccess() {
+        return new Promise((resolve) => {
+          successOverlay.style.opacity = "1";
+          // صوت ناعم راقي (اختياري بدون إزعاج)
+          try {
+            const audio = new AudioContext();
+            const osc = audio.createOscillator();
+            const gain = audio.createGain();
+            osc.connect(gain);
+            gain.connect(audio.destination);
+            osc.frequency.value = 523.25; // Do
+            gain.gain.value = 0.1;
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(
+              0.00001,
+              audio.currentTime + 0.6,
+            );
+            osc.stop(audio.currentTime + 0.6);
+          } catch (e) {}
+          setTimeout(() => {
+            successOverlay.style.opacity = "0";
+            resolve();
+          }, 1200);
+        });
+      }
+
+      // تشغيل الفيديو
+      function playOfficialVideo() {
+        videoEl.style.display = "block";
+        videoEl.currentTime = 0;
+        videoEl
+          .play()
+          .then(() => {
+            statusText.innerText = "🎥 جاري عرض الملتقى التعليمي";
+            isVideoPlaying = true;
+            platform.style.opacity = "0";
+            platform.style.pointerEvents = "none";
+            platform.style.transition = "0.6s";
+          })
+          .catch((err) => {
+            statusText.innerText = "🤲 المس الإطار مرة أخرى";
+            isVideoPlaying = false;
+          });
+      }
+
+      // إعادة ضبط بعد الفيديو
+      videoEl.addEventListener("ended", () => {
+        videoEl.style.display = "none";
+        isVideoPlaying = false;
+        platform.style.opacity = "1";
+        platform.style.pointerEvents = "auto";
+        statusText.innerText = "🤲 ضع يدك لبدء التدشين";
+        cooldown = true;
+        setTimeout(() => {
+          cooldown = false;
+          if (!isVideoPlaying) statusText.innerText = "🤲 ضع يدك لبدء التدشين";
+        }, 2500);
+      });
+
+      // العملية الكاملة: يد → مسح → نجاح → فيديو
+      async function initiateHandScan(touchX, touchY) {
+        if (isVideoPlaying || isScanning || cooldown) return;
+
+        const rect = handArea.getBoundingClientRect();
+        if (
+          touchX < rect.left ||
+          touchX > rect.right ||
+          touchY < rect.top ||
+          touchY > rect.bottom
+        )
+          return;
+
+        isScanning = true;
+        statusText.innerText = "🔍 جاري مسح بصمة اليد ...";
+
+        await startSoftScan();
+        await showFormalSuccess();
+        if (!isVideoPlaying) playOfficialVideo();
+
+        isScanning = false;
+      }
+
+      // أحداث اللمس والماوس (للشاشات اللمسية الكبيرة)
+      handArea.addEventListener(
+        "touchstart",
+        (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          initiateHandScan(touch.clientX, touch.clientY);
+        },
+        { passive: false },
+      );
+
+      handArea.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        initiateHandScan(e.clientX, e.clientY);
+      });
+
+      // منع القوائم
+      handArea.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      console.log(
+        "✅ الملتقى جاهز - تصميم رسمي ذهبي/كحلي، مسح يد كامل، فيديو تدشين",
+      );
+    </script>
+  </body>
+</html>
