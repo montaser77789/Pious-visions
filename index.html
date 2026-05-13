@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>ملتقى رؤى تُبنى - تدشين حي | بصمة ناجحة</title>
+    <title>ملتقى رؤى تُبنى - تدشين حي | Vimeo</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
       rel="stylesheet"
@@ -88,19 +88,16 @@
         object-fit: contain;
       }
 
+      /* iframe يملأ الشاشة بالكامل */
       .video-layer {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+        width: 100vw;
+        height: 100vh;
         z-index: 20;
         display: none;
-      }
-
-      .video-layer.fullscreen-video {
-        object-fit: cover;
+        border: none;
       }
 
       .scan-platform {
@@ -324,7 +321,6 @@
         border-radius: 20px 0 0 20px;
       }
 
-      /* عجلة الخزنة - دوران بطيء جداً (3 ثواني) */
       .vault-wheel-full {
         position: absolute;
         top: 50%;
@@ -550,15 +546,16 @@
     <div id="particles-js"></div>
 
     <div class="screen-container">
-      <video
+      <!-- iframe من فيمو - يملأ الشاشة بالكامل -->
+      <iframe
         id="eventVideo"
-        class="video-layer fullscreen-video"
-        preload="auto"
-        playsinline
+        class="video-layer"
+        src="https://player.vimeo.com/video/1192029216?h=d30f814400&autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
       >
-        <source src="vid33.mp4" type="video/mp4" />
-        متصفحك لا يدعم تشغيل الفيديو.
-      </video>
+      </iframe>
 
       <div class="top-logos" id="topLogos">
         <img
@@ -661,8 +658,7 @@
       </div>
     </div>
 
-    <!-- إشعار النجاح الاحترافي -->
-    <div id="successToast" class="success-toast">تم قراءة البصمة بنجاح</div>
+    <div id="successToast" class="success-toast"></div>
 
     <div id="vaultFullscreen" class="vault-fullscreen">
       <div class="vault-door-left-full" id="doorLeftFull"></div>
@@ -705,7 +701,7 @@
         retina_detect: true,
       });
 
-      const videoEl = document.getElementById("eventVideo");
+      const iframeEl = document.getElementById("eventVideo");
       const handArea = document.getElementById("handArea");
       const scanBar = document.getElementById("scanBar");
       const scanGlow = document.getElementById("scanGlow");
@@ -725,22 +721,16 @@
       let isScanning = false;
       let cooldown = false;
 
-      // دالة عرض الإشعار الاحترافي مع الصوت الناطق
       function showSuccessNotification() {
         return new Promise((resolve) => {
-          // عرض الإشعار البصري
           successToast.classList.add("show");
-
-          // تشغيل الصوت الناطق "تم قراءة البصمة بنجاح"
           speakSuccess();
 
-          // اهتزاز خفيف للإشعار
           successToast.style.transform = "translate(-50%, -50%) scale(1.05)";
           setTimeout(() => {
             successToast.style.transform = "translate(-50%, -50%) scale(1)";
           }, 150);
 
-          // إخفاء الإشعار بعد 2 ثانية
           setTimeout(() => {
             successToast.classList.remove("show");
             resolve();
@@ -748,10 +738,8 @@
         });
       }
 
-      // دالة النطق باستخدام Web Speech API
       function speakSuccess() {
         try {
-          // إنشاء كائن النطق
           const utterance = new SpeechSynthesisUtterance(
             "تم قراءة البصمة بنجاح",
           );
@@ -759,30 +747,10 @@
           utterance.rate = 0.9;
           utterance.pitch = 1.1;
           utterance.volume = 1;
-
-          // اختيار صوت عربي إذا كان متوفراً
-          window.speechSynthesis.cancel(); // إلغاء أي نطق سابق
+          window.speechSynthesis.cancel();
           window.speechSynthesis.speak(utterance);
         } catch (e) {
-          console.log("متصفح لا يدعم النطق");
-          // محاولة بديلة باستخدام AudioContext
-          try {
-            const audioCtx = new (
-              window.AudioContext || window.webkitAudioContext
-            )();
-            const oscillator = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            oscillator.connect(gain);
-            gain.connect(audioCtx.destination);
-            oscillator.frequency.value = 880;
-            gain.gain.value = 0.15;
-            oscillator.start();
-            gain.gain.exponentialRampToValueAtTime(
-              0.00001,
-              audioCtx.currentTime + 0.5,
-            );
-            oscillator.stop(audioCtx.currentTime + 0.5);
-          } catch (e2) {}
+          console.log("النطق غير مدعوم");
         }
       }
 
@@ -864,7 +832,6 @@
           handIcon.style.transition = "0.3s";
           handIcon.style.opacity = "0";
 
-          // دوران العجلة ببطء شديد (3 ثواني)
           vaultWheelFull.style.transition =
             "transform 3s cubic-bezier(0.4, 0, 0.2, 1)";
           vaultWheelFull.style.transform =
@@ -872,7 +839,6 @@
 
           await new Promise((r) => setTimeout(r, 1500));
 
-          // فتح الأبواب ببطء شديد (3.5 ثواني)
           doorLeftFull.style.transition =
             "transform 3.5s cubic-bezier(0.33, 1, 0.68, 1)";
           doorRightFull.style.transition =
@@ -880,7 +846,6 @@
           doorLeftFull.style.transform = "translateX(-100%)";
           doorRightFull.style.transform = "translateX(100%)";
 
-          // الضوء الأبيض يظهر ببطء
           setTimeout(() => {
             whiteLightFull.style.transition =
               "all 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.2)";
@@ -920,37 +885,28 @@
         });
       }
 
+      // دالة تشغيل الفيديو الجديدة - بدون currentTime و play()
       function playOfficialVideo() {
-        videoEl.style.display = "block";
-        videoEl.currentTime = 0;
-
-        videoEl.style.objectFit = "cover";
-        videoEl.style.width = "100%";
-        videoEl.style.height = "100%";
-
+        iframeEl.style.display = "block";
         topLogos.classList.add("hidden");
-
-        videoEl
-          .play()
-          .then(() => {
-            if (statusText)
-              statusText.innerText = "🎥 جاري عرض الملتقى التعليمي";
-            isVideoPlaying = true;
-            platform.style.opacity = "0";
-            platform.style.pointerEvents = "none";
-            platform.style.transition = "opacity 0.6s ease";
-          })
-          .catch((err) => {
-            console.warn("التشغيل التلقائي مقيد");
-            if (statusText) statusText.innerText = "بصمة اليد";
-            isVideoPlaying = false;
-            videoEl.style.display = "none";
-            topLogos.classList.remove("hidden");
-          });
+        if (statusText) statusText.innerText = "🎥 جاري عرض الملتقى التعليمي";
+        isVideoPlaying = true;
+        platform.style.opacity = "0";
+        platform.style.pointerEvents = "none";
+        platform.style.transition = "opacity 0.6s ease";
       }
 
-      videoEl.addEventListener("ended", () => {
-        videoEl.style.display = "none";
+      // محاولة الاستماع لنهاية الفيديو من iframe
+      window.addEventListener("message", function (event) {
+        if (event.origin === "https://player.vimeo.com") {
+          if (event.data === "ended") {
+            handleVideoEnd();
+          }
+        }
+      });
+
+      function handleVideoEnd() {
+        iframeEl.style.display = "none";
         isVideoPlaying = false;
         platform.style.opacity = "1";
         platform.style.pointerEvents = "auto";
@@ -961,7 +917,15 @@
           cooldown = false;
           if (!isVideoPlaying && statusText) statusText.innerText = "بصمة اليد";
         }, 2000);
-      });
+      }
+
+      // مؤقت احتياطي - اضبط المدة حسب طول الفيديو الفعلي (بالمللي ثانية)
+      let videoDuration = 180000; // 3 دقائق كافتراضي - غير الرقم حسب طول فيديو الملتقى
+      setTimeout(() => {
+        if (isVideoPlaying) {
+          handleVideoEnd();
+        }
+      }, videoDuration + 5000);
 
       async function initiateHandScan(touchX, touchY) {
         if (isVideoPlaying || isScanning || cooldown) return;
@@ -979,8 +943,6 @@
         if (statusText) statusText.innerText = "🔍 جاري مسح البصمة...";
 
         await realisticFingerprintScan();
-
-        // إظهار إشعار النجاح مع الصوت
         await showSuccessNotification();
 
         if (statusText) statusText.innerText = "✅ تم التحقق - فتح الخزنة";
@@ -1015,8 +977,12 @@
       doorRightFull.style.transform = "translateX(0)";
 
       console.log(
-        "✅ حركة بطيئة جداً: دوران العجلة 3 ثواني، الأبواب 3.5 ثواني، إشعار ناطق بالنجاح",
+        "✅ تم التحديث: iframe من فيمو يعمل بكامل الشاشة مع autoplay فوري",
       );
+
+      // 🔧 غيّر هذه القيمة حسب طول فيديو الملتقى الحقيقي (بالمللي ثانية)
+      // مثال: 3 دقائق = 180000، 5 دقائق = 300000، دقيقة واحدة = 60000
+      videoDuration = 180000; // ← غيّر هذا الرقم
     </script>
   </body>
 </html>
