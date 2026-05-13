@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>ملتقى رؤى تُبنى - تدشين حي | حركة بطيئة وأنيقة</title>
+    <title>ملتقى رؤى تُبنى - تدشين حي | بصمة ناجحة</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
       rel="stylesheet"
@@ -64,13 +64,11 @@
         transition: opacity 0.5s ease;
       }
 
-      /* إضافة كلاس للإخفاء */
       .top-logos.hidden {
         opacity: 0;
         visibility: hidden;
       }
 
-      /* كلا الشعارين بنفس الحجم تماماً */
       .top-logo {
         height: 140px;
         width: auto;
@@ -90,7 +88,6 @@
         object-fit: contain;
       }
 
-      /* فيديو يعرض بشكل أفقي يغطي الشاشة بالكامل */
       .video-layer {
         position: fixed;
         top: 0;
@@ -242,6 +239,47 @@
         z-index: 20;
       }
 
+      /* إشعار النجاح الاحترافي */
+      .success-toast {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.9);
+        background: linear-gradient(135deg, #00c3ff, #0088cc);
+        color: white;
+        padding: 20px 50px;
+        border-radius: 70px;
+        font-size: 1.8rem;
+        font-weight: 800;
+        z-index: 300;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        white-space: nowrap;
+        box-shadow:
+          0 0 50px rgba(0, 195, 255, 0.8),
+          0 10px 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        font-family: "Cairo", sans-serif;
+        letter-spacing: 1px;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .success-toast.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .success-toast::before {
+        content: "✓";
+        margin-left: 15px;
+        font-size: 2.2rem;
+        font-weight: bold;
+        display: inline-block;
+      }
+
       /* خزنة كامل الشاشة - حركة بطيئة جداً */
       .vault-fullscreen {
         position: fixed;
@@ -267,7 +305,7 @@
         height: 100%;
         background: linear-gradient(145deg, #1a2a36, #0f1a22);
         box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-        transition: transform 2.2s cubic-bezier(0.33, 1, 0.68, 1);
+        transition: transform 3.5s cubic-bezier(0.33, 1, 0.68, 1);
         z-index: 202;
         border-right: 2px solid rgba(184, 134, 11, 0.5);
         border-left: 2px solid rgba(184, 134, 11, 0.5);
@@ -286,7 +324,7 @@
         border-radius: 20px 0 0 20px;
       }
 
-      /* عجلة الخزنة - دوران بطيء جداً */
+      /* عجلة الخزنة - دوران بطيء جداً (3 ثواني) */
       .vault-wheel-full {
         position: absolute;
         top: 50%;
@@ -301,7 +339,7 @@
           0 0 80px rgba(0, 0, 0, 0.8),
           inset 0 0 50px rgba(255, 215, 0, 0.4);
         z-index: 203;
-        transition: transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .vault-wheel-full::after {
@@ -353,7 +391,6 @@
         border: 1px solid rgba(184, 134, 11, 0.4);
       }
 
-      /* الضوء الأبيض - ظهور بطيء وأنيق */
       .white-light-burst-full {
         position: absolute;
         top: 50%;
@@ -372,7 +409,7 @@
         z-index: 210;
         opacity: 0;
         pointer-events: none;
-        transition: all 1s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+        transition: all 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.2);
       }
 
       .screen-flash {
@@ -454,9 +491,13 @@
           width: 160px;
           height: 160px;
         }
-        .vault-door-left-full,
-        .vault-door-right-full {
-          transition: transform 1.8s cubic-bezier(0.33, 1, 0.68, 1);
+        .success-toast {
+          font-size: 1.2rem;
+          padding: 12px 30px;
+          white-space: nowrap;
+        }
+        .success-toast::before {
+          font-size: 1.5rem;
         }
       }
 
@@ -515,10 +556,8 @@
         preload="auto"
         playsinline
       >
-        <source
-          src="https://www.w3schools.com/html/mov_bbb.mp4"
-          type="video/mp4"
-        />
+        <source src="vid33.mp4" type="video/mp4" />
+        متصفحك لا يدعم تشغيل الفيديو.
       </video>
 
       <div class="top-logos" id="topLogos">
@@ -617,10 +656,13 @@
           <div id="scanGlow" class="scan-glow"></div>
         </div>
 
-        <div id="statusText" class="status">بصمه اليد</div>
+        <div id="statusText" class="status">بصمة اليد</div>
         <div class="instruction"></div>
       </div>
     </div>
+
+    <!-- إشعار النجاح الاحترافي -->
+    <div id="successToast" class="success-toast">تم قراءة البصمة بنجاح</div>
 
     <div id="vaultFullscreen" class="vault-fullscreen">
       <div class="vault-door-left-full" id="doorLeftFull"></div>
@@ -670,6 +712,7 @@
       const statusText = document.getElementById("statusText");
       const platform = document.getElementById("scanPlatform");
       const topLogos = document.getElementById("topLogos");
+      const successToast = document.getElementById("successToast");
 
       const vaultFullscreen = document.getElementById("vaultFullscreen");
       const doorLeftFull = document.getElementById("doorLeftFull");
@@ -681,6 +724,67 @@
       let isVideoPlaying = false;
       let isScanning = false;
       let cooldown = false;
+
+      // دالة عرض الإشعار الاحترافي مع الصوت الناطق
+      function showSuccessNotification() {
+        return new Promise((resolve) => {
+          // عرض الإشعار البصري
+          successToast.classList.add("show");
+
+          // تشغيل الصوت الناطق "تم قراءة البصمة بنجاح"
+          speakSuccess();
+
+          // اهتزاز خفيف للإشعار
+          successToast.style.transform = "translate(-50%, -50%) scale(1.05)";
+          setTimeout(() => {
+            successToast.style.transform = "translate(-50%, -50%) scale(1)";
+          }, 150);
+
+          // إخفاء الإشعار بعد 2 ثانية
+          setTimeout(() => {
+            successToast.classList.remove("show");
+            resolve();
+          }, 2000);
+        });
+      }
+
+      // دالة النطق باستخدام Web Speech API
+      function speakSuccess() {
+        try {
+          // إنشاء كائن النطق
+          const utterance = new SpeechSynthesisUtterance(
+            "تم قراءة البصمة بنجاح",
+          );
+          utterance.lang = "ar-SA";
+          utterance.rate = 0.9;
+          utterance.pitch = 1.1;
+          utterance.volume = 1;
+
+          // اختيار صوت عربي إذا كان متوفراً
+          window.speechSynthesis.cancel(); // إلغاء أي نطق سابق
+          window.speechSynthesis.speak(utterance);
+        } catch (e) {
+          console.log("متصفح لا يدعم النطق");
+          // محاولة بديلة باستخدام AudioContext
+          try {
+            const audioCtx = new (
+              window.AudioContext || window.webkitAudioContext
+            )();
+            const oscillator = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            oscillator.connect(gain);
+            gain.connect(audioCtx.destination);
+            oscillator.frequency.value = 880;
+            gain.gain.value = 0.15;
+            oscillator.start();
+            gain.gain.exponentialRampToValueAtTime(
+              0.00001,
+              audioCtx.currentTime + 0.5,
+            );
+            oscillator.stop(audioCtx.currentTime + 0.5);
+          } catch (e2) {}
+        }
+      }
 
       async function realisticFingerprintScan() {
         return new Promise(async (resolve) => {
@@ -720,21 +824,18 @@
 
           await new Promise((resolveFirst) => {
             animateScan(0, height - 10, scanDuration, () => {
-              playBeepSound(750, 0.1);
               setTimeout(resolveFirst, 80);
             });
           });
 
           await new Promise((resolveSecond) => {
             animateScan(height - 10, 0, scanDuration, () => {
-              playBeepSound(950, 0.1);
               setTimeout(resolveSecond, 80);
             });
           });
 
           await new Promise((resolveThird) => {
             animateScan(0, height / 2.5, scanDuration * 0.7, () => {
-              playBeepSound(1100, 0.12);
               setTimeout(resolveThird, 60);
             });
           });
@@ -755,26 +856,6 @@
         });
       }
 
-      function playBeepSound(frequency = 880, duration = 0.1) {
-        try {
-          const audioCtx = new (
-            window.AudioContext || window.webkitAudioContext
-          )();
-          const oscillator = audioCtx.createOscillator();
-          const gainNode = audioCtx.createGain();
-          oscillator.connect(gainNode);
-          gainNode.connect(audioCtx.destination);
-          oscillator.frequency.value = frequency;
-          gainNode.gain.value = 0.1;
-          oscillator.start();
-          gainNode.gain.exponentialRampToValueAtTime(
-            0.00001,
-            audioCtx.currentTime + duration,
-          );
-          oscillator.stop(audioCtx.currentTime + duration);
-        } catch (e) {}
-      }
-
       function openFullscreenVault() {
         return new Promise(async (resolve) => {
           vaultFullscreen.classList.add("active");
@@ -783,26 +864,26 @@
           handIcon.style.transition = "0.3s";
           handIcon.style.opacity = "0";
 
-          // دوران العجلة ببطء شديد
+          // دوران العجلة ببطء شديد (3 ثواني)
           vaultWheelFull.style.transition =
-            "transform 1.8s cubic-bezier(0.4, 0, 0.2, 1)";
+            "transform 3s cubic-bezier(0.4, 0, 0.2, 1)";
           vaultWheelFull.style.transform =
-            "translate(-50%, -50%) rotate(900deg)";
+            "translate(-50%, -50%) rotate(1080deg)";
 
-          await new Promise((r) => setTimeout(r, 1000));
+          await new Promise((r) => setTimeout(r, 1500));
 
-          // فتح الأبواب ببطء شديد
+          // فتح الأبواب ببطء شديد (3.5 ثواني)
           doorLeftFull.style.transition =
-            "transform 2.2s cubic-bezier(0.33, 1, 0.68, 1)";
+            "transform 3.5s cubic-bezier(0.33, 1, 0.68, 1)";
           doorRightFull.style.transition =
-            "transform 2.2s cubic-bezier(0.33, 1, 0.68, 1)";
+            "transform 3.5s cubic-bezier(0.33, 1, 0.68, 1)";
           doorLeftFull.style.transform = "translateX(-100%)";
           doorRightFull.style.transform = "translateX(100%)";
 
           // الضوء الأبيض يظهر ببطء
           setTimeout(() => {
             whiteLightFull.style.transition =
-              "all 1s cubic-bezier(0.2, 0.9, 0.4, 1.2)";
+              "all 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.2)";
             whiteLightFull.style.width = "100vw";
             whiteLightFull.style.height = "100vh";
             whiteLightFull.style.opacity = "1";
@@ -820,9 +901,9 @@
                 container.style.transform = "scale(1)";
               }, 300);
             }
-          }, 200);
+          }, 300);
 
-          await new Promise((r) => setTimeout(r, 1600));
+          await new Promise((r) => setTimeout(r, 2200));
 
           handIcon.style.opacity = "0.45";
           vaultFullscreen.classList.remove("active");
@@ -847,7 +928,6 @@
         videoEl.style.width = "100%";
         videoEl.style.height = "100%";
 
-        // إخفاء الشعارات العلوية عند تشغيل الفيديو
         topLogos.classList.add("hidden");
 
         videoEl
@@ -861,9 +941,8 @@
             platform.style.transition = "opacity 0.6s ease";
           })
           .catch((err) => {
-            console.warn("التشغيل التلقائي مقيد، يرجى التفاعل مع الصفحة أولاً");
-            if (statusText)
-              statusText.innerText = "🤲 اضغط مرة أخرى لتشغيل العرض";
+            console.warn("التشغيل التلقائي مقيد");
+            if (statusText) statusText.innerText = "بصمة اليد";
             isVideoPlaying = false;
             videoEl.style.display = "none";
             topLogos.classList.remove("hidden");
@@ -875,14 +954,12 @@
         isVideoPlaying = false;
         platform.style.opacity = "1";
         platform.style.pointerEvents = "auto";
-        // إعادة ظهور الشعارات بعد انتهاء الفيديو
         topLogos.classList.remove("hidden");
-        if (statusText) statusText.innerText = "🤲 ضع يدك لفتح خزنة التدشين";
+        if (statusText) statusText.innerText = "بصمة اليد";
         cooldown = true;
         setTimeout(() => {
           cooldown = false;
-          if (!isVideoPlaying && statusText)
-            statusText.innerText = "🤲 ضع يدك لفتح خزنة التدشين";
+          if (!isVideoPlaying && statusText) statusText.innerText = "بصمة اليد";
         }, 2000);
       });
 
@@ -899,9 +976,12 @@
           return;
 
         isScanning = true;
-        if (statusText) statusText.innerText = "🔍 جاري مسح البصمة ببطء...";
+        if (statusText) statusText.innerText = "🔍 جاري مسح البصمة...";
 
         await realisticFingerprintScan();
+
+        // إظهار إشعار النجاح مع الصوت
+        await showSuccessNotification();
 
         if (statusText) statusText.innerText = "✅ تم التحقق - فتح الخزنة";
 
@@ -935,7 +1015,7 @@
       doorRightFull.style.transform = "translateX(0)";
 
       console.log(
-        "✅ حركة بطيئة وأنيقة: دوران العجلة 1.8 ثانية، فتح الأبواب 2.2 ثانية، الشعارات تختفي تلقائياً",
+        "✅ حركة بطيئة جداً: دوران العجلة 3 ثواني، الأبواب 3.5 ثواني، إشعار ناطق بالنجاح",
       );
     </script>
   </body>
