@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>ملتقى رؤى تُبنى - تدشين حي | Vimeo</title>
+    <title>ملتقى رؤى تُبنى - تدشين حي</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
       rel="stylesheet"
@@ -88,7 +88,7 @@
         object-fit: contain;
       }
 
-      /* iframe يملأ الشاشة بالكامل */
+      /* iframe - يبدأ مخفياً تماماً */
       .video-layer {
         position: fixed;
         top: 0;
@@ -236,7 +236,6 @@
         z-index: 20;
       }
 
-      /* إشعار النجاح الاحترافي */
       .success-toast {
         position: fixed;
         top: 50%;
@@ -277,7 +276,6 @@
         display: inline-block;
       }
 
-      /* خزنة كامل الشاشة - حركة بطيئة جداً */
       .vault-fullscreen {
         position: fixed;
         top: 0;
@@ -479,14 +477,6 @@
           width: 240px;
           height: 240px;
         }
-        .wheel-rings::before {
-          width: 200px;
-          height: 200px;
-        }
-        .wheel-rings::after {
-          width: 160px;
-          height: 160px;
-        }
         .success-toast {
           font-size: 1.2rem;
           padding: 12px 30px;
@@ -518,39 +508,17 @@
           height: 380px;
         }
       }
-
-      @media (min-width: 1800px) {
-        .vault-wheel-full {
-          width: 750px;
-          height: 750px;
-        }
-        .vault-wheel-full::after {
-          font-size: 22rem;
-        }
-        .wheel-rings {
-          width: 650px;
-          height: 650px;
-        }
-        .wheel-rings::before {
-          width: 540px;
-          height: 540px;
-        }
-        .wheel-rings::after {
-          width: 440px;
-          height: 440px;
-        }
-      }
     </style>
   </head>
   <body>
     <div id="particles-js"></div>
 
     <div class="screen-container">
-      <!-- iframe من فيمو - يملأ الشاشة بالكامل -->
+      <!-- iframe: بدون autoplay في الرابط، يبدأ مخفياً -->
       <iframe
         id="eventVideo"
         class="video-layer"
-        src="https://player.vimeo.com/video/1192029216?h=d30f814400&autoplay=1&loop=0&muted=0&title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"
+        src="https://player.vimeo.com/video/1192042625?h=ab98fb25ad&autoplay=1&muted=1&background=1&controls=0&quality=1080p"
         frameborder="0"
         allow="autoplay; fullscreen; picture-in-picture"
         allowfullscreen
@@ -658,7 +626,7 @@
       </div>
     </div>
 
-    <div id="successToast" class="success-toast"></div>
+    <div id="successToast" class="success-toast">تم قراءة البصمة بنجاح</div>
 
     <div id="vaultFullscreen" class="vault-fullscreen">
       <div class="vault-door-left-full" id="doorLeftFull"></div>
@@ -720,17 +688,16 @@
       let isVideoPlaying = false;
       let isScanning = false;
       let cooldown = false;
+      let videoStarted = false;
 
       function showSuccessNotification() {
         return new Promise((resolve) => {
           successToast.classList.add("show");
           speakSuccess();
-
           successToast.style.transform = "translate(-50%, -50%) scale(1.05)";
           setTimeout(() => {
             successToast.style.transform = "translate(-50%, -50%) scale(1)";
           }, 150);
-
           setTimeout(() => {
             successToast.classList.remove("show");
             resolve();
@@ -749,9 +716,7 @@
           utterance.volume = 1;
           window.speechSynthesis.cancel();
           window.speechSynthesis.speak(utterance);
-        } catch (e) {
-          console.log("النطق غير مدعوم");
-        }
+        } catch (e) {}
       }
 
       async function realisticFingerprintScan() {
@@ -765,7 +730,6 @@
 
           const animateScan = (startPos, endPos, duration, callback) => {
             const startTime = performance.now();
-
             const updatePosition = (currentTime) => {
               const elapsed = currentTime - startTime;
               let progress = Math.min(1, elapsed / duration);
@@ -773,45 +737,38 @@
                 progress < 0.5
                   ? 4 * progress * progress * progress
                   : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
               const newPos = startPos + (endPos - startPos) * easeProgress;
               scanBar.style.top = newPos + "px";
-
               const intensity = Math.sin(progress * Math.PI);
               scanBar.style.boxShadow = `0 0 ${8 + intensity * 18}px #00c3ff, 0 0 ${15 + intensity * 25}px #7ee7ff`;
-
               if (progress < 1) {
                 requestAnimationFrame(updatePosition);
               } else {
                 if (callback) callback();
               }
             };
-
             requestAnimationFrame(updatePosition);
           };
 
           await new Promise((resolveFirst) => {
-            animateScan(0, height - 10, scanDuration, () => {
-              setTimeout(resolveFirst, 80);
-            });
+            animateScan(0, height - 10, scanDuration, () =>
+              setTimeout(resolveFirst, 80),
+            );
           });
-
           await new Promise((resolveSecond) => {
-            animateScan(height - 10, 0, scanDuration, () => {
-              setTimeout(resolveSecond, 80);
-            });
+            animateScan(height - 10, 0, scanDuration, () =>
+              setTimeout(resolveSecond, 80),
+            );
           });
-
           await new Promise((resolveThird) => {
-            animateScan(0, height / 2.5, scanDuration * 0.7, () => {
-              setTimeout(resolveThird, 60);
-            });
+            animateScan(0, height / 2.5, scanDuration * 0.7, () =>
+              setTimeout(resolveThird, 60),
+            );
           });
 
           scanBar.style.display = "none";
           scanGlow.style.opacity = "0";
           handArea.classList.remove("scanning-active");
-
           handArea.style.transition = "box-shadow 0.2s";
           handArea.style.boxShadow =
             "inset 0 0 40px rgba(0,255,100,0.3), 0 0 30px rgba(0,255,100,0.4)";
@@ -819,7 +776,6 @@
             handArea.style.boxShadow =
               "inset 0 0 40px rgba(0, 195, 255, 0.15), 0 0 30px rgba(0, 195, 255, 0.2)";
           }, 250);
-
           resolve();
         });
       }
@@ -827,7 +783,6 @@
       function openFullscreenVault() {
         return new Promise(async (resolve) => {
           vaultFullscreen.classList.add("active");
-
           const handIcon = document.querySelector(".hand-icon");
           handIcon.style.transition = "0.3s";
           handIcon.style.opacity = "0";
@@ -836,7 +791,6 @@
             "transform 3s cubic-bezier(0.4, 0, 0.2, 1)";
           vaultWheelFull.style.transform =
             "translate(-50%, -50%) rotate(1080deg)";
-
           await new Promise((r) => setTimeout(r, 1500));
 
           doorLeftFull.style.transition =
@@ -852,13 +806,11 @@
             whiteLightFull.style.width = "100vw";
             whiteLightFull.style.height = "100vh";
             whiteLightFull.style.opacity = "1";
-
             screenFlash.style.transition = "opacity 0.6s ease";
             screenFlash.style.opacity = "0.7";
             setTimeout(() => {
               screenFlash.style.opacity = "0";
             }, 600);
-
             const container = document.querySelector(".screen-container");
             if (container) {
               container.style.transform = "scale(1.02)";
@@ -869,10 +821,8 @@
           }, 300);
 
           await new Promise((r) => setTimeout(r, 2200));
-
           handIcon.style.opacity = "0.45";
           vaultFullscreen.classList.remove("active");
-
           doorLeftFull.style.transform = "translateX(0)";
           doorRightFull.style.transform = "translateX(0)";
           vaultWheelFull.style.transform = "translate(-50%, -50%) rotate(0deg)";
@@ -880,34 +830,27 @@
           whiteLightFull.style.height = "0";
           whiteLightFull.style.opacity = "0";
           screenFlash.style.opacity = "0";
-
           resolve();
         });
       }
 
-      // دالة تشغيل الفيديو الجديدة - بدون currentTime و play()
+      // تشغيل الفيديو: يظهر أولاً ثم يُشغَّل بعد ثانية ونصف لضمان اكتمال فتح الخزنة
       function playOfficialVideo() {
         iframeEl.style.display = "block";
+
         topLogos.classList.add("hidden");
+
         if (statusText) statusText.innerText = "🎥 جاري عرض الملتقى التعليمي";
+
         isVideoPlaying = true;
+
         platform.style.opacity = "0";
         platform.style.pointerEvents = "none";
-        platform.style.transition = "opacity 0.6s ease";
       }
-
-      // محاولة الاستماع لنهاية الفيديو من iframe
-      window.addEventListener("message", function (event) {
-        if (event.origin === "https://player.vimeo.com") {
-          if (event.data === "ended") {
-            handleVideoEnd();
-          }
-        }
-      });
-
       function handleVideoEnd() {
         iframeEl.style.display = "none";
         isVideoPlaying = false;
+        videoStarted = false;
         platform.style.opacity = "1";
         platform.style.pointerEvents = "auto";
         topLogos.classList.remove("hidden");
@@ -919,17 +862,22 @@
         }, 2000);
       }
 
-      // مؤقت احتياطي - اضبط المدة حسب طول الفيديو الفعلي (بالمللي ثانية)
-      let videoDuration = 180000; // 3 دقائق كافتراضي - غير الرقم حسب طول فيديو الملتقى
-      setTimeout(() => {
-        if (isVideoPlaying) {
+      window.addEventListener("message", function (event) {
+        if (
+          event.origin === "https://player.vimeo.com" &&
+          event.data === "ended"
+        ) {
           handleVideoEnd();
         }
+      });
+
+      let videoDuration = 180000;
+      setTimeout(() => {
+        if (isVideoPlaying) handleVideoEnd();
       }, videoDuration + 5000);
 
       async function initiateHandScan(touchX, touchY) {
         if (isVideoPlaying || isScanning || cooldown) return;
-
         const rect = handArea.getBoundingClientRect();
         if (
           touchX < rect.left ||
@@ -941,18 +889,11 @@
 
         isScanning = true;
         if (statusText) statusText.innerText = "🔍 جاري مسح البصمة...";
-
         await realisticFingerprintScan();
         await showSuccessNotification();
-
         if (statusText) statusText.innerText = "✅ تم التحقق - فتح الخزنة";
-
         await openFullscreenVault();
-
-        if (!isVideoPlaying) {
-          playOfficialVideo();
-        }
-
+        if (!isVideoPlaying) playOfficialVideo();
         isScanning = false;
       }
 
@@ -970,19 +911,10 @@
         e.preventDefault();
         initiateHandScan(e.clientX, e.clientY);
       });
-
       handArea.addEventListener("contextmenu", (e) => e.preventDefault());
 
       doorLeftFull.style.transform = "translateX(0)";
       doorRightFull.style.transform = "translateX(0)";
-
-      console.log(
-        "✅ تم التحديث: iframe من فيمو يعمل بكامل الشاشة مع autoplay فوري",
-      );
-
-      // 🔧 غيّر هذه القيمة حسب طول فيديو الملتقى الحقيقي (بالمللي ثانية)
-      // مثال: 3 دقائق = 180000، 5 دقائق = 300000، دقيقة واحدة = 60000
-      videoDuration = 180000; // ← غيّر هذا الرقم
     </script>
   </body>
 </html>
